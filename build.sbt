@@ -6,3 +6,7 @@ lazy val root = (project in file("."))
     scalaVersion := "2.12.6",
     scalafmtOnCompile := true
   )
+  .dependsOn(migrations)
+  .aggregate(migrations)
+
+lazy val migrations = project in file("migrations")
