@@ -6,7 +6,12 @@ lazy val root = (project in file("."))
     scalaVersion := "2.12.6",
     scalafmtOnCompile := true
   )
-  .dependsOn(migrations)
-  .aggregate(migrations)
+  .dependsOn(migrations, codegen)
+  .aggregate(migrations, codegen)
 
 lazy val migrations = project in file("migrations")
+
+lazy val codegen = (project in file("codegen"))
+  .settings(libraryDependencies += "com.typesafe.slick" %% "slick" % "3.2.3")
+  .dependsOn(migrations)
+  .aggregate(migrations)
