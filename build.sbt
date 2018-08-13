@@ -13,6 +13,10 @@ lazy val root = (project in file("."))
 lazy val migrations = project in file("migrations")
 
 lazy val codegen = (project in file("codegen"))
-  .settings(libraryDependencies += "com.typesafe.slick" %% "slick" % "3.2.3")
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.typesafe.slick" %% "slick" % "3.2.3",
+      "eu.timepit" %% "refined" % "0.9.2"
+    ))
   .dependsOn(migrations)
   .aggregate(migrations)

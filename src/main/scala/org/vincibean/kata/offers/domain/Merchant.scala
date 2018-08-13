@@ -2,4 +2,6 @@ package org.vincibean.kata.offers.domain
 
 import java.util.UUID
 
-final case class Merchant(id: UUID, name: String)
+import eu.timepit.refined.types.string.NonEmptyString
+
+final case class Merchant(id: UUID, name: NonEmptyString)
