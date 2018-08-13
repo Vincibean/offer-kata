@@ -4,7 +4,8 @@ lazy val root = (project in file("."))
     organization := "org.vincibean",
     version := "0.1",
     scalaVersion := "2.12.6",
-    scalafmtOnCompile := true
+    scalafmtOnCompile := true,
+    libraryDependencies += "org.joda" % "joda-money" % "0.12"
   )
   .dependsOn(migrations, codegen)
   .aggregate(migrations, codegen)
