@@ -10,7 +10,7 @@ slickCodegenDriver := slick.jdbc.H2Profile
 
 slickCodegenJdbcDriver := "org.h2.Driver"
 
-slickCodegenOutputPackage := "org.vincibean.dao.models"
+slickCodegenOutputPackage := "org.vincibean.kata.offers.dao"
 
 slickCodegenOutputDir := (sourceManaged in Compile).value
 
