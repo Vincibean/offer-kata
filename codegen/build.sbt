@@ -15,3 +15,5 @@ slickCodegenOutputPackage := "org.vincibean.kata.offers.dao"
 slickCodegenOutputDir := (sourceManaged in Compile).value
 
 libraryDependencies += "com.h2database" % "h2" % "1.4.197"
+
+sourceGenerators in Compile += slickCodegen.taskValue
