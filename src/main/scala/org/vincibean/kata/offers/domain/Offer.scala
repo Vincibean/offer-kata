@@ -1,5 +1,6 @@
 package org.vincibean.kata.offers.domain
 
+import java.time.LocalDate
 import java.util.UUID
 
 import eu.timepit.refined.types.string.NonEmptyString
@@ -9,4 +10,5 @@ final case class Offer(id: UUID,
                        product: Product,
                        merchant: Merchant,
                        description: NonEmptyString,
-                       money: BigMoney)
+                       money: BigMoney,
+                       validTill: LocalDate)
