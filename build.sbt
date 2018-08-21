@@ -1,9 +1,12 @@
 lazy val root = (project in file("."))
+  .configs(IntegrationTest)
   .settings(
+    Defaults.itSettings,
     name := "offer-kata",
     organization := "org.vincibean",
     version := "0.1",
     scalaVersion := "2.12.6",
+    scalacOptions ++= Seq("-Yrangepos"),
     scalafmtOnCompile := true,
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-http" % "10.1.3",
@@ -13,7 +16,8 @@ lazy val root = (project in file("."))
       "com.typesafe.slick" %% "slick" % "3.2.3",
       "org.joda" % "joda-money" % "0.12",
       "eu.timepit" %% "refined" % "0.9.2",
-      "ch.qos.logback" % "logback-classic" % "1.2.3"
+      "ch.qos.logback" % "logback-classic" % "1.2.3",
+      "org.specs2" %% "specs2-core" % "4.2.0" % "it; test"
     ) ++ Seq(
       "io.circe" %% "circe-core",
       "io.circe" %% "circe-generic",
