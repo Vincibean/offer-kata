@@ -17,3 +17,14 @@ You are required to create a simple RESTful software service that will allow a m
 Offers, once created, may be queried. After the period of time defined on the offer it should expire and
 further requests to query the offer should reflect that somehow. 
 Before an offer has expired users may cancel it.
+
+## Assumptions
+- No frontend development is necessary;
+- Offers are modeled as "the place where merchants meet products": a merchant can propose products via offers only; this
+means that the same merchant can sell the same product using different offers (and, as such, prices); this should allow
+quite an high degree of flexibility;   
+- In order to provide a validity to an offer, we could have used a date (e.g. valid till the 9th of August) or a period 
+(e.g. valid for the next 3 weeks): we preferred the date approach, as we deemed it more intuitive and user-friendly;
+- We don't need a fine-grained approach to dates (e.g. valid till the 17:00 of the 9th of August);
+- We didn't deal with timezones: we give for granted that the fronted will deal with that; 
+- We use JSON for requests/responses: it can be safely considered the standard nowadays;
