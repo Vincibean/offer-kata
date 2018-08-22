@@ -2,6 +2,7 @@ lazy val root = (project in file("."))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
+    parallelExecution in IntegrationTest := false,
     name := "offer-kata",
     organization := "org.vincibean",
     version := "0.1",
