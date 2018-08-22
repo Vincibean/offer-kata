@@ -21,8 +21,9 @@ class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
          The product repository should
            return 1 when a new product is saved $s1
            return a product when its ID is given $s2
-           return all products $s3
-           update a product when a product with the same UUID is saved $s4
+           return nothing when a non-existent ID is given $s3
+           return all products $s4
+           update a product when a product with the same UUID is saved $s5
       """
 
   private val repo = new ProductRepository()
@@ -40,7 +41,9 @@ class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
     res.map(_ must beSome(mock)).await
   }
 
-  def s3: Result = {
+  def s3: Result = repo.findBy(UUID.fromString(UUID.randomUUID().toString)).map(_ must beNone).await
+
+  def s4: Result = {
     val mock = ProductRepositorySpec.mockProduct("s3")
     val res: Future[Seq[Product]] = for {
       _ <- repo.insertOrUpdate(mock)
@@ -49,7 +52,7 @@ class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
     res.map(_ must not beEmpty).await
   }
 
-  def s4: Result = {
+  def s5: Result = {
     val mock = ProductRepositorySpec.mockProduct("s4")
     val res = for {
       _ <- repo.insertOrUpdate(mock)
