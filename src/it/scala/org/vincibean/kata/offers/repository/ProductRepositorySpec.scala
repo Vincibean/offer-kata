@@ -11,6 +11,10 @@ import org.vincibean.kata.offers.domain.Product
 
 import scala.concurrent.Future
 
+object ProductRepositorySpec {
+  def mockProduct(descr: String = "a mock product") = Product(UUID.randomUUID(), "mockProduct", descr)
+}
+
 class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
   override def is: SpecStructure =
     sequential ^ s2"""
@@ -24,11 +28,11 @@ class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
   private val repo = new ProductRepository()
 
   def s1: MatchResult[Future[Int]] = {
-    repo.insertOrUpdate(mockProduct("s1")) should beEqualTo(1).await
+    repo.insertOrUpdate(ProductRepositorySpec.mockProduct("s1")) should beEqualTo(1).await
   }
 
   def s2: Result = {
-    val mock = mockProduct("s2")
+    val mock = ProductRepositorySpec.mockProduct("s2")
     val res = for {
       _ <- repo.insertOrUpdate(mock)
       x <- repo.findBy(mock.id)
@@ -37,7 +41,7 @@ class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
   }
 
   def s3: Result = {
-    val mock = mockProduct("s3")
+    val mock = ProductRepositorySpec.mockProduct("s3")
     val res: Future[Seq[Product]] = for {
       _ <- repo.insertOrUpdate(mock)
       x <- repo.findAll
@@ -46,7 +50,7 @@ class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
   }
 
   def s4: Result = {
-    val mock = mockProduct("s4")
+    val mock = ProductRepositorySpec.mockProduct("s4")
     val res = for {
       _ <- repo.insertOrUpdate(mock)
       _ <- repo.insertOrUpdate(mock.copy(description = "updated product"))
@@ -54,7 +58,5 @@ class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
     } yield x
     res.map(_ must beSome.which(_.description == "updated product")).await
   }
-
-  private def mockProduct(descr: String = "a mock product") = Product(UUID.randomUUID(), "mockProduct", descr)
 
 }
