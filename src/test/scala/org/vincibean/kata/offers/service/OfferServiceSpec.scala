@@ -1,16 +1,17 @@
 package org.vincibean.kata.offers.service
 
-import java.time.{LocalDate, ZoneId}
-import java.util.{Date, UUID}
+import java.time.LocalDate
+import java.util.UUID
 
 import org.joda.money.{BigMoney, CurrencyUnit}
-import org.scalacheck.{Arbitrary, Gen, Prop}
-import org.specs2.{ScalaCheck, Specification}
+import org.scalacheck.Prop
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.execute.Result
 import org.specs2.matcher.MatchResult
 import org.specs2.scalacheck.ScalaCheckFunction2
 import org.specs2.specification.core.SpecStructure
+import org.specs2.{ScalaCheck, Specification}
+import org.vincibean.kata.offers.Mocks._
 import org.vincibean.kata.offers.domain.{Merchant, Offer, Product}
 import org.vincibean.kata.offers.repository.Repository
 
@@ -101,50 +102,6 @@ class OfferServiceSpec(implicit ee: ExecutionEnv)
       x <- service.get(mock.id)
     } yield x
     res.map(_ must beSome.which(_.description == "updated product")).await
-  }
-
-  implicit val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary(
-    Arbitrary.arbDate.arbitrary
-      .map(_.toInstant.atZone(ZoneId.systemDefault()).toLocalDate))
-
-  implicit val arbitraryBigMoney: Arbitrary[BigMoney] = Arbitrary {
-    for {
-      currency <- Gen.oneOf(
-        Seq(CurrencyUnit.AUD,
-            CurrencyUnit.CAD,
-            CurrencyUnit.CHF,
-            CurrencyUnit.EUR,
-            CurrencyUnit.GBP,
-            CurrencyUnit.JPY,
-            CurrencyUnit.USD))
-      amount <- Arbitrary.arbBigDecimal.arbitrary
-    } yield BigMoney.of(currency, amount.bigDecimal)
-  }
-
-  implicit val arbitraryProduct: Arbitrary[Product] = Arbitrary {
-    for {
-      id <- Gen.uuid
-      name <- Gen.alphaNumStr
-      description <- Gen.alphaNumStr
-    } yield Product(id, name, description)
-  }
-
-  implicit val arbitraryMerchant: Arbitrary[Merchant] = Arbitrary {
-    for {
-      id <- Gen.uuid
-      description <- Gen.alphaNumStr
-    } yield Merchant(id, description)
-  }
-
-  implicit val arbitraryOffer: Arbitrary[Offer] = Arbitrary {
-    for {
-      validTill <- Arbitrary.arbitrary[LocalDate]
-      id <- Gen.uuid
-      product <- Arbitrary.arbitrary[Product]
-      merchant <- Arbitrary.arbitrary[Merchant]
-      description <- Gen.alphaNumStr
-      money <- Arbitrary.arbitrary[BigMoney]
-    } yield Offer(id, product, merchant, description, money, validTill)
   }
 
   def p1: ScalaCheckFunction2[LocalDate, Offer, Prop] = prop {
