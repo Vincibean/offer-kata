@@ -27,4 +27,6 @@ quite an high degree of flexibility;
 (e.g. valid for the next 3 weeks): we preferred the date approach, as we deemed it more intuitive and user-friendly;
 - We don't need a fine-grained approach to dates (e.g. valid till the 17:00 of the 9th of August);
 - We didn't deal with timezones: we give for granted that the fronted will deal with that; 
+- When deserializing a JSON containing a currency, if the currency is unknown, we default it to USD 
+(currencies from all over the world are covered, though); 
 - We use JSON for requests/responses: it can be safely considered the standard nowadays;
