@@ -1,6 +1,8 @@
+import Dependencies.migrationsDependencies
+
 enablePlugins(FlywayPlugin)
 
-libraryDependencies += "com.h2database" % "h2" % "1.4.197"
+libraryDependencies ++= migrationsDependencies
 
 flywayUrl := "jdbc:h2:file:./target/OFFERS_KATA"
 

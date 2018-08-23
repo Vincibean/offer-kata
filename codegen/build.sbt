@@ -1,3 +1,5 @@
+import Dependencies.codegenDependencies
+
 enablePlugins(CodegenPlugin)
 
 slickCodegenDatabaseUrl := "jdbc:h2:file:./target/OFFERS_KATA"
@@ -14,6 +16,6 @@ slickCodegenOutputPackage := "org.vincibean.kata.offers.dao"
 
 slickCodegenOutputDir := (sourceManaged in Compile).value
 
-libraryDependencies += "com.h2database" % "h2" % "1.4.197"
+libraryDependencies ++= codegenDependencies
 
 sourceGenerators in Compile += slickCodegen.taskValue
