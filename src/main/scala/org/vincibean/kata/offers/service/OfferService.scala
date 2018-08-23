@@ -1,5 +1,6 @@
 package org.vincibean.kata.offers.service
 
+import java.time.LocalDate
 import java.util.UUID
 
 import org.vincibean.kata.offers.domain.Offer
@@ -14,6 +15,12 @@ trait OfferService {
   def all: Future[Seq[Offer]]
 
   def get(id: UUID): Future[Option[Offer]]
+
+  def isValid(o: Offer, now: LocalDate = LocalDate.now()): Boolean =
+    now.isBefore(o.validTill)
+
+  def isInvalid(o: Offer, now: LocalDate = LocalDate.now()): Boolean =
+    !isValid(o, now)
 
 }
 

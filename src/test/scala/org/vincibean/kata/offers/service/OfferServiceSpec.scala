@@ -1,13 +1,15 @@
 package org.vincibean.kata.offers.service
 
-import java.time.LocalDate
-import java.util.UUID
+import java.time.{LocalDate, ZoneId}
+import java.util.{Date, UUID}
 
 import org.joda.money.{BigMoney, CurrencyUnit}
-import org.specs2.Specification
+import org.scalacheck.{Arbitrary, Gen, Prop}
+import org.specs2.{ScalaCheck, Specification}
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.execute.Result
 import org.specs2.matcher.MatchResult
+import org.specs2.scalacheck.ScalaCheckFunction2
 import org.specs2.specification.core.SpecStructure
 import org.vincibean.kata.offers.domain.{Merchant, Offer, Product}
 import org.vincibean.kata.offers.repository.Repository
@@ -27,7 +29,9 @@ object OfferServiceSpec {
     )
 }
 
-class OfferServiceSpec(implicit ee: ExecutionEnv) extends Specification {
+class OfferServiceSpec(implicit ee: ExecutionEnv)
+    extends Specification
+    with ScalaCheck {
   override def is: SpecStructure =
     s2"""
         The offer service should
@@ -37,6 +41,9 @@ class OfferServiceSpec(implicit ee: ExecutionEnv) extends Specification {
           return no offer when the repository is empty $s4
           return all offers $s5
           update an offer when an offer with the same UUID is saved $s6
+          mark an offer as valid if its validity is before the given date $p1
+          mark an offer as invalid if its validity is after the given date $p2
+          mark an offer as invalid if its validity is equal to the given date $p3
       """
 
   private def mockRepo(): Repository[Future, Offer, UUID] =
@@ -94,6 +101,67 @@ class OfferServiceSpec(implicit ee: ExecutionEnv) extends Specification {
       x <- service.get(mock.id)
     } yield x
     res.map(_ must beSome.which(_.description == "updated product")).await
+  }
+
+  implicit val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary(
+    Arbitrary.arbDate.arbitrary
+      .map(_.toInstant.atZone(ZoneId.systemDefault()).toLocalDate))
+
+  implicit val arbitraryBigMoney: Arbitrary[BigMoney] = Arbitrary {
+    for {
+      currency <- Gen.oneOf(
+        Seq(CurrencyUnit.AUD,
+            CurrencyUnit.CAD,
+            CurrencyUnit.CHF,
+            CurrencyUnit.EUR,
+            CurrencyUnit.GBP,
+            CurrencyUnit.JPY,
+            CurrencyUnit.USD))
+      amount <- Arbitrary.arbBigDecimal.arbitrary
+    } yield BigMoney.of(currency, amount.bigDecimal)
+  }
+
+  implicit val arbitraryProduct: Arbitrary[Product] = Arbitrary {
+    for {
+      id <- Gen.uuid
+      name <- Gen.alphaNumStr
+      description <- Gen.alphaNumStr
+    } yield Product(id, name, description)
+  }
+
+  implicit val arbitraryMerchant: Arbitrary[Merchant] = Arbitrary {
+    for {
+      id <- Gen.uuid
+      description <- Gen.alphaNumStr
+    } yield Merchant(id, description)
+  }
+
+  implicit val arbitraryOffer: Arbitrary[Offer] = Arbitrary {
+    for {
+      validTill <- Arbitrary.arbitrary[LocalDate]
+      id <- Gen.uuid
+      product <- Arbitrary.arbitrary[Product]
+      merchant <- Arbitrary.arbitrary[Merchant]
+      description <- Gen.alphaNumStr
+      money <- Arbitrary.arbitrary[BigMoney]
+    } yield Offer(id, product, merchant, description, money, validTill)
+  }
+
+  def p1: ScalaCheckFunction2[LocalDate, Offer, Prop] = prop {
+    (now: LocalDate, offer: Offer) =>
+      offer.validTill.isAfter(now) ==>
+        mockService().isValid(offer, now)
+  }
+
+  def p2: ScalaCheckFunction2[LocalDate, Offer, Prop] = prop {
+    (now: LocalDate, offer: Offer) =>
+      offer.validTill.isBefore(now) ==>
+        mockService().isInvalid(offer, now)
+  }
+
+  def p3: ScalaCheckFunction2[LocalDate, Offer, Prop] = prop {
+    (now: LocalDate, offer: Offer) =>
+      mockService().isInvalid(offer.copy(validTill = now), now)
   }
 
 }
