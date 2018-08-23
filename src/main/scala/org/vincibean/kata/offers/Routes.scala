@@ -55,10 +55,9 @@ object Routes extends ErrorAccumulatingCirceSupport {
         path(JavaUUID) { id =>
           entity(as[CancelOffer.type]) { _ =>
             val maybeOffer: Future[Option[Offer]] = service.get(id)
-            val maybeUpdates: Future[Option[Int]] = maybeOffer
-              .map(
-                _.map(o => service.create(o.copy(validTill = LocalDate.now()))))
-              .flatMap(_.sequence)
+            val maybeUpdates: Future[Option[Int]] =
+              maybeOffer.flatMap(_.traverse(o =>
+                service.create(o.copy(validTill = LocalDate.now()))))
             val maybeUpdatesAndOffer: Future[Option[(Int, Offer)]] =
               Applicative[Future]
                 .compose[Option]

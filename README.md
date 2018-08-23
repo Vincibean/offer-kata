@@ -26,6 +26,8 @@ quite an high degree of flexibility;
 - In order to provide a validity to an offer, we could have used a date (e.g. valid till the 9th of August) or a period 
 (e.g. valid for the next 3 weeks): we preferred the date approach, as we deemed it more intuitive and user-friendly;
 - We don't need a fine-grained approach to dates (e.g. valid till the 17:00 of the 9th of August);
+- canceling a valid offer means that, from the given moment, that offer isn't valid anymore;
+- canceling an already invalid offer must trigger an error message;
 - We didn't deal with timezones: we give for granted that the fronted will deal with that; 
 - When deserializing a JSON containing a currency, if the currency is unknown, we default it to USD 
 (currencies from all over the world are covered, though);
