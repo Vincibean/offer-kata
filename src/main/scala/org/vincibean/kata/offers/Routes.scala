@@ -41,7 +41,7 @@ object Routes extends ErrorAccumulatingCirceSupport {
         pathEnd {
           entity(as[Offer]) { order =>
             onSuccess(service.create(order)) { result =>
-              complete((StatusCodes.Accepted, result))
+              complete((StatusCodes.Created, result))
             }
           }
         }
