@@ -1,4 +1,5 @@
 import Dependencies.rootDependencies
+import Scalac.options
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
@@ -9,7 +10,9 @@ lazy val root = (project in file("."))
     organization := "org.vincibean",
     version := "0.1",
     scalaVersion := "2.12.6",
-    scalacOptions ++= Seq("-Yrangepos"),
+    scalacOptions ++= Scalac.options,
+    scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports",
+                                                "-Xfatal-warnings"),
     scalafmtOnCompile := true,
     libraryDependencies ++= rootDependencies
   )

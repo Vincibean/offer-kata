@@ -60,6 +60,6 @@ class OfferRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
     res.map(_ must beSome.which(_.description == "updated product")).await
   }
 
-  private def mockOffer(descr: String = "a mock product") = Offer(UUID.randomUUID(), ProductRepositorySpec.mockProduct(), MerchantRepositorySpec.mockMerchant(), descr, BigMoney.of(CurrencyUnit.USD, BigDecimal(42L).bigDecimal), LocalDate.now().plusDays(2))
+  private def mockOffer(descr: String) = Offer(UUID.randomUUID(), ProductRepositorySpec.mockProduct(), MerchantRepositorySpec.mockMerchant(), descr, BigMoney.of(CurrencyUnit.USD, BigDecimal(42L).bigDecimal), LocalDate.now().plusDays(2))
 
 }
