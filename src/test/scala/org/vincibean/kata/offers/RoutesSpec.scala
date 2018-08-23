@@ -8,7 +8,7 @@ import akka.http.scaladsl.testkit.Specs2RouteTest
 import de.heikoseeberger.akkahttpcirce.ErrorAccumulatingCirceSupport
 import org.specs2.mutable.Specification
 import org.vincibean.kata.offers.domain.Offer
-import org.vincibean.kata.offers.service.{OfferService, OfferServiceSpec}
+import org.vincibean.kata.offers.service.OfferService
 import io.circe.generic.auto._
 import io.circe.syntax._
 import org.vincibean.kata.offers.implicits.SerDes._
@@ -20,7 +20,7 @@ class RoutesSpec
     with ErrorAccumulatingCirceSupport
     with Specs2RouteTest {
 
-  private val mockOffer = OfferServiceSpec.mockOffer("RoutesSpec")
+  private val mockOffer = Mocks.mockOffer()
   private val invalidOffer =
     mockOffer.copy(validTill = LocalDate.now().minusDays(2))
 

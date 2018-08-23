@@ -3,7 +3,6 @@ package org.vincibean.kata.offers.service
 import java.time.LocalDate
 import java.util.UUID
 
-import org.joda.money.{BigMoney, CurrencyUnit}
 import org.scalacheck.Prop
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.execute.Result
@@ -11,24 +10,13 @@ import org.specs2.matcher.MatchResult
 import org.specs2.scalacheck.ScalaCheckFunction2
 import org.specs2.specification.core.SpecStructure
 import org.specs2.{ScalaCheck, Specification}
+import org.vincibean.kata.offers.Mocks
 import org.vincibean.kata.offers.Mocks._
-import org.vincibean.kata.offers.domain.{Merchant, Offer, Product}
+import org.vincibean.kata.offers.domain.Offer
 import org.vincibean.kata.offers.repository.Repository
 
 import scala.collection.mutable
 import scala.concurrent.Future
-
-object OfferServiceSpec {
-  def mockOffer(descr: String = "a mock product") =
-    Offer(
-      UUID.randomUUID(),
-      Product(UUID.randomUUID(), "mockProduct", descr),
-      Merchant(UUID.randomUUID(), descr),
-      descr,
-      BigMoney.of(CurrencyUnit.USD, BigDecimal(42L).bigDecimal),
-      LocalDate.now().plusDays(2)
-    )
-}
 
 class OfferServiceSpec(implicit ee: ExecutionEnv)
     extends Specification
@@ -67,10 +55,10 @@ class OfferServiceSpec(implicit ee: ExecutionEnv)
   private def mockService() = OfferService(mockRepo())
 
   def s1: MatchResult[Future[Int]] =
-    mockService().create(OfferServiceSpec.mockOffer("s1")) should beEqualTo(1).await
+    mockService().create(Mocks.mockOffer()) should beEqualTo(1).await
 
   def s2: Result = {
-    val mock = OfferServiceSpec.mockOffer("s2")
+    val mock = Mocks.mockOffer()
     val service = mockService()
     val res = for {
       _ <- service.create(mock)
@@ -84,7 +72,7 @@ class OfferServiceSpec(implicit ee: ExecutionEnv)
   def s4: Result = mockService().all.map(_ must beEmpty).await
 
   def s5: Result = {
-    val mock = OfferServiceSpec.mockOffer("s3")
+    val mock = Mocks.mockOffer()
     val service = mockService()
     val res = for {
       _ <- service.create(mock)
@@ -94,7 +82,7 @@ class OfferServiceSpec(implicit ee: ExecutionEnv)
   }
 
   def s6: Result = {
-    val mock = OfferServiceSpec.mockOffer("s4")
+    val mock = Mocks.mockOffer()
     val service = mockService()
     val res = for {
       _ <- service.create(mock)

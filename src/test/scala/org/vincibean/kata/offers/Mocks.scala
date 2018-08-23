@@ -1,6 +1,7 @@
 package org.vincibean.kata.offers
 
 import java.time.{LocalDate, ZoneId}
+import java.util.UUID
 
 import org.joda.money.{BigMoney, CurrencyUnit}
 import org.scalacheck.{Arbitrary, Gen}
@@ -51,5 +52,15 @@ object Mocks {
       money <- Arbitrary.arbitrary[BigMoney]
     } yield Offer(id, product, merchant, description, money, validTill)
   }
+
+  def mockOffer() =
+    Offer(
+      UUID.randomUUID(),
+      Product(UUID.randomUUID(), "mockProduct", "a mock product"),
+      Merchant(UUID.randomUUID(), "a mock merchant"),
+      "a mock offer",
+      BigMoney.of(CurrencyUnit.USD, BigDecimal(42L).bigDecimal),
+      LocalDate.now().plusDays(2)
+    )
 
 }
