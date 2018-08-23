@@ -8,7 +8,7 @@ import org.vincibean.kata.offers.repository.{
   OfferRepository,
   ProductRepository
 }
-import org.vincibean.kata.offers.service.OfferServiceImpl
+import org.vincibean.kata.offers.service.OfferService
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 
@@ -24,7 +24,7 @@ object WebServer extends App {
     DatabaseConfig.forConfig[JdbcProfile]("storage-config")
 
   val bindingFuture = Http().bindAndHandle(
-    Routes.routes(new OfferServiceImpl(
+    Routes.routes(OfferService(
       new OfferRepository(new ProductRepository(), new MerchantRepository()))),
     "localhost",
     8080)

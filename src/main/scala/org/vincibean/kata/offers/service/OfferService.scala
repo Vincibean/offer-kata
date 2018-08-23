@@ -24,13 +24,15 @@ trait OfferService {
 
 }
 
-class OfferServiceImpl(repo: Repository[Future, Offer, UUID])
-    extends OfferService {
+object OfferService {
+  def apply(repo: Repository[Future, Offer, UUID]): OfferService =
+    new OfferService {
 
-  override def create(o: Offer): Future[Int] = repo.insertOrUpdate(o)
+      override def create(o: Offer): Future[Int] = repo.insertOrUpdate(o)
 
-  override def all: Future[Seq[Offer]] = repo.findAll
+      override def all: Future[Seq[Offer]] = repo.findAll
 
-  override def get(id: UUID): Future[Option[Offer]] = repo.findBy(id)
+      override def get(id: UUID): Future[Option[Offer]] = repo.findBy(id)
 
+    }
 }

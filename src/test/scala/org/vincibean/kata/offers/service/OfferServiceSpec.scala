@@ -64,7 +64,7 @@ class OfferServiceSpec(implicit ee: ExecutionEnv)
         Future.successful(rep.get(id))
     }
 
-  private def mockService() = new OfferServiceImpl(mockRepo())
+  private def mockService() = OfferService(mockRepo())
 
   def s1: MatchResult[Future[Int]] =
     mockService().create(OfferServiceSpec.mockOffer("s1")) should beEqualTo(1).await
