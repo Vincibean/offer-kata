@@ -11,6 +11,7 @@ import org.vincibean.kata.offers.domain.Offer
 import org.vincibean.kata.offers.service.OfferService
 import io.circe.generic.auto._
 import io.circe.syntax._
+import org.vincibean.kata.offers.domain.Offer.CancelOffer
 import org.vincibean.kata.offers.implicits.SerDes._
 
 import scala.concurrent.Future
@@ -70,19 +71,19 @@ class RoutesSpec
       }
     }
 
-    "return a specific offer for GET requests to the specific UUID" in {
+    "return a specific offer for GET requests to the specific ID" in {
       Get(s"/offers/${mockOffer.id}") ~> fullRoute ~> check {
         responseAs[Offer] should beEqualTo(mockOffer)
       }
     }
 
-    "return no offer for GET requests when an offer associated to a valid UUID can't be found" in {
+    "return no offer for GET requests when an offer associated to a valid ID can't be found" in {
       Get(s"/offers/${mockOffer.id}") ~> emptyRoute ~> check {
         (status shouldEqual StatusCodes.NotFound) and (responseAs[String] shouldEqual Routes.noOffer)
       }
     }
 
-    "return no offer for GET requests when an invalid UUID is given" in {
+    "return no offer for GET requests when an invalid ID is given" in {
       Get(s"/offers/$notExistingID") ~> fullRoute ~> check {
         (status shouldEqual StatusCodes.NotFound) and (responseAs[String] shouldEqual Routes.noOffer)
       }
@@ -99,6 +100,31 @@ class RoutesSpec
         responseAs[Int] shouldEqual 1
       }
     }
+
+    "create a new offer cancellation for PATCH requests when a valid ID is given" in {
+      Patch(s"/offers/${mockOffer.id}", CancelOffer.asJson) ~> fullRoute ~> check {
+        (status shouldEqual StatusCodes.OK) and (responseAs[Int] shouldEqual 1)
+      }
+    }
+
+    "return no offer for PATCH requests when an offer associated to a valid ID can't be found" in {
+      Patch(s"/offers/${mockOffer.id}", CancelOffer.asJson) ~> emptyRoute ~> check {
+        (status shouldEqual StatusCodes.NotFound) and (responseAs[String] shouldEqual Routes.noOffer)
+      }
+    }
+
+    "return no offer for PATCH requests when an invalid ID is given" in {
+      Patch(s"/offers/$notExistingID", CancelOffer.asJson) ~> fullRoute ~> check {
+        (status shouldEqual StatusCodes.NotFound) and (responseAs[String] shouldEqual Routes.noOffer)
+      }
+    }
+
+    "return an error message for PATCH requests to a no-more-valid offer" in {
+      Patch(s"/offers/${invalidOffer.id}", CancelOffer.asJson) ~> invalidRoute ~> check {
+        (status shouldEqual StatusCodes.Gone) and (responseAs[String] shouldEqual Routes.invalidOffer)
+      }
+    }
+
   }
 
 }

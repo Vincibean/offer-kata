@@ -5,6 +5,10 @@ import java.util.UUID
 
 import org.joda.money.BigMoney
 
+object Offer {
+  case object CancelOffer
+}
+
 final case class Offer(id: UUID,
                        product: Product,
                        merchant: Merchant,
