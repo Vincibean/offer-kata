@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq("-Yrangepos"),
     scalafmtOnCompile := true,
     libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-http" % "10.1.3",
+      "com.typesafe.akka" %% "akka-http" % "10.1.4",
       "com.typesafe.akka" %% "akka-stream" % "2.5.14",
       "de.heikoseeberger" %% "akka-http-circe" % "1.21.0",
       "com.h2database" % "h2" % "1.4.197",
@@ -18,7 +18,9 @@ lazy val root = (project in file("."))
       "org.joda" % "joda-money" % "0.12",
       "eu.timepit" %% "refined" % "0.9.2",
       "ch.qos.logback" % "logback-classic" % "1.2.3",
-      "org.specs2" %% "specs2-core" % "4.2.0" % "it; test"
+      "org.specs2" %% "specs2-core" % "4.2.0" % "it; test",
+      "org.specs2" %% "specs2-scalacheck" % "4.2.0" % Test,
+      "com.typesafe.akka" %% "akka-http-testkit" % "10.1.4" % Test
     ) ++ Seq(
       "io.circe" %% "circe-core",
       "io.circe" %% "circe-generic",
