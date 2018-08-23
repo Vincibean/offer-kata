@@ -10,6 +10,8 @@ import org.specs2.execute.Result
 import org.specs2.matcher.MatchResult
 import org.specs2.specification.core.SpecStructure
 import org.vincibean.kata.offers.domain.Offer
+import slick.basic.DatabaseConfig
+import slick.jdbc.JdbcProfile
 
 import scala.concurrent.Future
 
@@ -24,6 +26,7 @@ class OfferRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
            update an offer when an offer with the same UUID is saved $s5
       """
 
+  implicit val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig[JdbcProfile]("storage-config")
   private val repo = new OfferRepository(new ProductRepository(), new MerchantRepository())
 
   def s1: MatchResult[Future[Int]] = {

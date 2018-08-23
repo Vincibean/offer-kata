@@ -9,6 +9,8 @@ import org.vincibean.kata.offers.repository.{
   ProductRepository
 }
 import org.vincibean.kata.offers.service.OfferServiceImpl
+import slick.basic.DatabaseConfig
+import slick.jdbc.JdbcProfile
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
@@ -18,6 +20,8 @@ object WebServer extends App {
   implicit val system: ActorSystem = ActorSystem("my-system")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+  implicit val dbConfig: DatabaseConfig[JdbcProfile] =
+    DatabaseConfig.forConfig[JdbcProfile]("storage-config")
 
   val bindingFuture = Http().bindAndHandle(
     Routes.routes(new OfferServiceImpl(

@@ -9,11 +9,10 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MerchantRepository(implicit ec: ExecutionContext)
+class MerchantRepository(implicit dbConfig: DatabaseConfig[JdbcProfile],
+                         ec: ExecutionContext)
     extends Repository[Future, Merchant, UUID] {
 
-  private val dbConfig: DatabaseConfig[JdbcProfile] =
-    DatabaseConfig.forConfig[JdbcProfile]("storage-config")
   import dbConfig.profile.api._
 
   private val db = dbConfig.db

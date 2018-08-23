@@ -8,6 +8,8 @@ import org.specs2.execute.Result
 import org.specs2.matcher.MatchResult
 import org.specs2.specification.core.SpecStructure
 import org.vincibean.kata.offers.domain.Merchant
+import slick.basic.DatabaseConfig
+import slick.jdbc.JdbcProfile
 
 import scala.concurrent.Future
 
@@ -26,6 +28,7 @@ class MerchantRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
            update a merchant when a merchant with the same UUID is saved $s5
       """
 
+  implicit val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig[JdbcProfile]("storage-config")
   private val repo = new MerchantRepository()
 
   def s1: MatchResult[Future[Int]] = {

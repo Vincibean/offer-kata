@@ -20,11 +20,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class OfferRepository(
     productRepository: Repository[Future, OfferedProduct, UUID],
     merchantRepository: Repository[Future, Merchant, UUID])(
-    implicit ec: ExecutionContext)
+    implicit dbConfig: DatabaseConfig[JdbcProfile],
+    ec: ExecutionContext)
     extends Repository[Future, Offer, UUID] {
 
-  private val dbConfig: DatabaseConfig[JdbcProfile] =
-    DatabaseConfig.forConfig[JdbcProfile]("storage-config")
   import dbConfig.profile.api._
 
   private val db = dbConfig.db

@@ -8,6 +8,8 @@ import org.specs2.execute.Result
 import org.specs2.matcher.MatchResult
 import org.specs2.specification.core.SpecStructure
 import org.vincibean.kata.offers.domain.Product
+import slick.basic.DatabaseConfig
+import slick.jdbc.JdbcProfile
 
 import scala.concurrent.Future
 
@@ -26,6 +28,7 @@ class ProductRepositorySpec(implicit ee: ExecutionEnv) extends Specification {
            update a product when a product with the same UUID is saved $s5
       """
 
+  implicit val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig[JdbcProfile]("storage-config")
   private val repo = new ProductRepository()
 
   def s1: MatchResult[Future[Int]] = {
