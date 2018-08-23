@@ -15,6 +15,18 @@ import org.vincibean.kata.offers.repository.Repository
 import scala.collection.mutable
 import scala.concurrent.Future
 
+object OfferServiceSpec {
+  def mockOffer(descr: String = "a mock product") =
+    Offer(
+      UUID.randomUUID(),
+      Product(UUID.randomUUID(), "mockProduct", descr),
+      Merchant(UUID.randomUUID(), descr),
+      descr,
+      BigMoney.of(CurrencyUnit.USD, BigDecimal(42L).bigDecimal),
+      LocalDate.now().plusDays(2)
+    )
+}
+
 class OfferServiceSpec(implicit ee: ExecutionEnv) extends Specification {
   override def is: SpecStructure =
     s2"""
@@ -44,13 +56,13 @@ class OfferServiceSpec(implicit ee: ExecutionEnv) extends Specification {
         Future.successful(rep.get(id))
     }
 
-  private def mockService() = new OfferService(mockRepo())
+  private def mockService() = new OfferServiceImpl(mockRepo())
 
   def s1: MatchResult[Future[Int]] =
-    mockService().create(mockOffer("s1")) should beEqualTo(1).await
+    mockService().create(OfferServiceSpec.mockOffer("s1")) should beEqualTo(1).await
 
   def s2: Result = {
-    val mock = mockOffer("s2")
+    val mock = OfferServiceSpec.mockOffer("s2")
     val service = mockService()
     val res = for {
       _ <- service.create(mock)
@@ -64,7 +76,7 @@ class OfferServiceSpec(implicit ee: ExecutionEnv) extends Specification {
   def s4: Result = mockService().all.map(_ must beEmpty).await
 
   def s5: Result = {
-    val mock = mockOffer("s3")
+    val mock = OfferServiceSpec.mockOffer("s3")
     val service = mockService()
     val res = for {
       _ <- service.create(mock)
@@ -74,7 +86,7 @@ class OfferServiceSpec(implicit ee: ExecutionEnv) extends Specification {
   }
 
   def s6: Result = {
-    val mock = mockOffer("s4")
+    val mock = OfferServiceSpec.mockOffer("s4")
     val service = mockService()
     val res = for {
       _ <- service.create(mock)
@@ -83,15 +95,5 @@ class OfferServiceSpec(implicit ee: ExecutionEnv) extends Specification {
     } yield x
     res.map(_ must beSome.which(_.description == "updated product")).await
   }
-
-  private def mockOffer(descr: String = "a mock product") =
-    Offer(
-      UUID.randomUUID(),
-      Product(UUID.randomUUID(), "mockProduct", descr),
-      Merchant(UUID.randomUUID(), descr),
-      descr,
-      BigMoney.of(CurrencyUnit.USD, BigDecimal(42L).bigDecimal),
-      LocalDate.now().plusDays(2)
-    )
 
 }

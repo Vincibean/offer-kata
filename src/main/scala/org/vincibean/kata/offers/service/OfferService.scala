@@ -7,8 +7,18 @@ import org.vincibean.kata.offers.repository.Repository
 
 import scala.concurrent.Future
 
-class OfferService(repo: Repository[Future, Offer, UUID])
-    extends Service[Future, Offer, UUID] {
+trait OfferService {
+
+  def create(o: Offer): Future[Int]
+
+  def all: Future[Seq[Offer]]
+
+  def get(id: UUID): Future[Option[Offer]]
+
+}
+
+class OfferServiceImpl(repo: Repository[Future, Offer, UUID])
+    extends OfferService {
 
   override def create(o: Offer): Future[Int] = repo.insertOrUpdate(o)
 
