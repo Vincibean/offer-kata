@@ -53,3 +53,24 @@ sbt flywayMigrate run
 For your convenience, two bash scripts were created:
 - `run.sh`: runs the main class;
 - `test.sh`: runs the integration tests, and then the unit tests.
+
+## Postman REST Collection
+For your convenience, a [Postman](https://www.getpostman.com/) Collection was created for you [here](https://www.getpostman.com/collections/b0a50dd63259e87eb800)
+
+## CURL commands
+List all valid offers:
+```
+curl --request GET --url http://localhost:8080/offers
+```
+Create a new offer:
+```
+curl --request POST --url http://localhost:8080/offers --header "Content-Type: application/json" --data '{"id": "acaab7e9-bab9-416c-99e9-63ce74dbd3a8","product": {"id": "e3712f03-bfd6-45b0-b120-a7d90d44bc23","name": "mockProduct","description": "a mock product"},"merchant": {"id": "b4aefced-fef0-4c0b-9451-b70091b1386c","name": "a mock merchant"},"description": "s1","money": {"currency": "USD","amount": 42},"validTill": {"year": 2018,"month": 8,"dayOfMonth": 26}}'
+```
+List a specific offer (the one we just created):
+```
+curl --request GET --url http://localhost:8080/offers/acaab7e9-bab9-416c-99e9-63ce74dbd3a8
+```
+Cancel a specific offer (the one we just created):
+```
+curl --request PATCH --url http://localhost:8080/offers/acaab7e9-bab9-416c-99e9-63ce74dbd3a8 --header "Content-Type: application/json" --data {}
+```
