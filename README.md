@@ -33,3 +33,23 @@ quite an high degree of flexibility;
 (currencies from all over the world are covered, though);
 - Error messages aren't localized; 
 - We use JSON for requests/responses: it can be safely considered the standard nowadays;
+
+## How to run it
+This project uses the `flyway-sbt` and `slick-codegen` plugins, hence you have to make sure that the `flywayMigrate` task
+has been executed first.
+### Tests
+```
+sbt flywayMigrate test
+``` 
+### Integration Tests
+```
+sbt flywayMigrate it:test
+``` 
+### Run Main
+```
+sbt flywayMigrate run
+``` 
+### Bash Scripts
+For your convenience, two bash scripts were created:
+- `run.sh`: runs the main class;
+- `test.sh`: runs the integration tests, and then the unit tests.
